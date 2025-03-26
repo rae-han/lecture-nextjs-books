@@ -1,20 +1,30 @@
-type SearchParamsKeys = 'q';
+import BookItem from "@/components/book-item";
+import { BookData } from "@/types";
 
-// [2]. 타입 정의
-interface SearchPageProps {
+export default async function Page({
+  searchParams,
+}: {
   searchParams: Promise<{
-    [key in SearchParamsKeys]: string;
-  }>
-}
-
-// [3]. 서버 컴포넌트 경우에는 서버 측에서 사전 렌더링 되기 위해 딱 한번 실행 되므로 비동기 처리가 가능하다.
-export default async function Search({ searchParams }: SearchPageProps) {
-  /**
-   * [1]. page의 props로 searchParams:Promise와 params:Promise가 전달된다.
-   */
-  
+    q?: string;
+  }>;
+}) {
   const { q } = await searchParams;
-  console.log({ q });
 
-  return <div>Search</div>;
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/search?q=${q}`);
+
+  if (!response.ok) {
+    return <div>데이터를 불러오는데 실패했습니다.</div>
+  }
+
+  const books: BookData[] = await response.json();
+
+
+
+  return (
+    <div>
+      {books.map((book) => (
+        <BookItem key={book.id} {...book} />
+      ))}
+    </div>
+  );
 }

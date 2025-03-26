@@ -145,10 +145,13 @@ function processValue1<T>(value: T): WrapInArray0<T> {
 const result1 = processValue1("hello"); // result1: string[]
 const result2 = processValue1(42);      // result2: number
 
-type SameType<T> = T extends string ? T : T;
+type IdentityType<T> = [T] extends [string] ? T : T;
 
 function testFunc<T>(param: T) {
-  const testValue: SameType<T> = param;
-  // Type 'T' is not assignable to type 'SameType<T>'.
+  const testValue: IdentityType<T> = param;
 }
 
+function test<T extends [T] extends [string] ? string : never>(a: T) {
+  type R<T> = [T] extends [string] ? T : T;
+  const testValue: R<T> = a;
+}
