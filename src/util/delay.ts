@@ -1,3 +1,3 @@
-const delay = (ms: number = 4_000) => new Promise((resolve) => setTimeout(() => resolve('delay'), ms));
+const delay = async (ms: number = 2_000) => new Promise((resolve) => setTimeout(() => resolve('delay'), ms));
 
 export default delay;
