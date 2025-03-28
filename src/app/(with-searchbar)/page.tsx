@@ -2,8 +2,15 @@ import BookItem from "@/components/book-item";
 import style from "./page.module.css";
 import books from "@/mock/books.json";
 import { BookData } from "@/types";
+import delay from "@/util/delay";
+import { Suspense } from "react";
+import BookItemSkeleton from "@/components/skeleton/book-item-skeleton";
+import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
+
+export const dynamic = 'force-dynamic';
 
 async function AllBooks() {
+  await delay();
   const response = await fetch("http://localhost:12345/book", {
     next: {
       revalidate: 10,
@@ -25,6 +32,7 @@ async function AllBooks() {
 }
 
 async function RecoBooks() {
+  await delay();
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`, {
     next: {
       revalidate: 4,
@@ -44,19 +52,25 @@ async function RecoBooks() {
   );
 }
 
+const SuspenseBooks = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Suspense fallback={<BookListSkeleton count={3} />}>
+      {children}
+    </Suspense>
+  )
+}
+
 export default async function Home() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`);
-  const allBooks = await response.json();
 
   return (
     <div className={style.container}>
       <section>
         <h3>지금 추천하는 도서</h3>
-        <RecoBooks />
+        <SuspenseBooks><RecoBooks /></SuspenseBooks>
       </section>
       <section>
         <h3>등록된 모든 도서</h3>
-        <AllBooks />
+        <SuspenseBooks><AllBooks /></SuspenseBooks>
       </section>
     </div>
   );

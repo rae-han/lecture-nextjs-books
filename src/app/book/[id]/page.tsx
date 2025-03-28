@@ -15,10 +15,8 @@ export const generateStaticParams = () => {
   ];
 };
 
-export default async function Page({ params }: { params: Promise<{ id: string | string[] }> }) {
-  const { id } = await params;
-
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`);
+async function BookDetail({ bookId }: { bookId: string }) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`);
 
   if (!response.ok) {
     return <div>데이터를 불러오는데 실패했습니다.</div>
@@ -30,7 +28,7 @@ export default async function Page({ params }: { params: Promise<{ id: string | 
   const { title, subTitle, description, author, publisher, coverImgUrl } = book;
 
   return (
-    <div className={style.container}>
+    <section className={style.container}>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -43,6 +41,21 @@ export default async function Page({ params }: { params: Promise<{ id: string | 
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
+    </section>
+  );
+}
+
+async function ReviewEditor() {
+  return <div>리뷰 작성</div>
+}
+
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={id} />
+      <ReviewEditor />
     </div>
   );
 }
