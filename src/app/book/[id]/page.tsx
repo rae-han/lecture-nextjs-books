@@ -1,5 +1,7 @@
-import { BookData } from "@/types";
+import { BookData, ReviewData } from "@/types";
 import style from "./page.module.css";
+import ReviewItem from "@/components/review-item";
+import { ReviewEditor } from "@/components/review-editor";
 
 export const generateStaticParams = () => {
   return [
@@ -45,8 +47,22 @@ async function BookDetail({ bookId }: { bookId: string }) {
   );
 }
 
-async function ReviewEditor() {
-  return <div>리뷰 작성</div>
+async function ReviewList({ bookId }: { bookId: string }) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`);
+
+  if (!response.ok) {
+    throw new Error(`데이터를 불러오는데 실패했습니다, ${response.statusText}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
+  return (
+    <section>
+      {reviews.map((review) => (
+        <ReviewItem key={review.id} {...review} />
+      ))}
+    </section>
+  );
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -55,7 +71,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   return (
     <div className={style.container}>
       <BookDetail bookId={id} />
-      <ReviewEditor />
+      <ReviewEditor bookId={id} />
+      <ReviewList bookId={id} />
     </div>
   );
 }
