@@ -4,8 +4,10 @@ import style from "./layout.module.css";
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -15,8 +17,10 @@ export default function RootLayout({
             <Link href={"/"}>📚 ONEBITE BOOKS</Link>
           </header>
           <main>{children}</main>
-          <footer>제작 @winterlood</footer>
+          <footer>제작 @raehan</footer>
         </div>
+        {modal}
+        <div id="modal-root"></div>
       </body>
     </html>
   );
