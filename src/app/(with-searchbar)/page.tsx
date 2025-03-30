@@ -6,8 +6,21 @@ import delay from "@/util/delay";
 import { Suspense } from "react";
 import BookItemSkeleton from "@/components/skeleton/book-item-skeleton";
 import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
+import { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: "책을 위한 서점",
+  description: "책 목록을 확인할 수 있습니다.",
+  openGraph: {
+    title: "책을 위한 서점",
+    description: "책 목록을 확인할 수 있습니다.",
+    images: [
+      { url: "/thumbnail.png" },
+    ],
+  },
+}
 
 async function AllBooks() {
   await delay();
